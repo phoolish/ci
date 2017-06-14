@@ -4,7 +4,6 @@ image_resource:
   type: docker-image
   source:
     repository: ruby
-    tag: {{ruby_version}}
 
 inputs:
 - name: cookbook
@@ -13,9 +12,6 @@ inputs:
 
 outputs:
 - name: cookbook-version
-
-params:
-  COOKBOOK_NAME: {{cookbook_name}}
 
 run:
   path: bash

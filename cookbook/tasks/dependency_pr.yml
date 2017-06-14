@@ -10,12 +10,6 @@ inputs:
 - name: cookbook
 - name: ci
 
-params:
-  GITHUB_TOKEN: {{github_token}}
-  GITHUB_REPO: {{github_repo}}
-  UPDATE_COOKBOOKS: true
-  PRIVATE_KEY: {{github_private_key}}
-
 run:
   path: bash
   args:
