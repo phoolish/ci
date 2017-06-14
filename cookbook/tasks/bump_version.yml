@@ -24,7 +24,7 @@ run:
       cd cookbook-version
       echo $NEW_VERSION > VERSION
       [[ -e Berksfile.lock ]] && sed -i "s/$COOKBOOK_NAME ($OLD_VERSION)/$COOKBOOK_NAME ($NEW_VERSION)/g" Berksfile.lock
-      git config user.email {{git_email}}
-      git config user.name {{git_name}}
+      git config user.email $GIT_EMAIL
+      git config user.name $GIT_NAME
       git add .
       git commit -m "Bump to $NEW_VERSION"
