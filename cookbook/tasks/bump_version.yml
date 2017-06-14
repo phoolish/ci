@@ -1,0 +1,34 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ruby
+    tag: {{ruby_version}}
+
+inputs:
+- name: cookbook
+- name: version
+- name: old_version
+
+outputs:
+- name: cookbook-version
+
+params:
+  COOKBOOK_NAME: {{cookbook_name}}
+
+run:
+  path: bash
+  args:
+    - -c
+    - |
+      export NEW_VERSION=$(cat ./version/number)
+      export OLD_VERSION=$(cat ./old_version/number)
+      cp -R cookbook/. cookbook-version
+      cd cookbook-version
+      echo $NEW_VERSION > VERSION
+      [[ -e Berksfile.lock ]] && sed -i "s/$COOKBOOK_NAME ($OLD_VERSION)/$COOKBOOK_NAME ($NEW_VERSION)/g" Berksfile.lock
+      git config user.email {{git_email}}
+      git config user.name {{git_name}}
+      git add .
+      git commit -m "Bump to $NEW_VERSION"

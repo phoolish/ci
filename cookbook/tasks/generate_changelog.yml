@@ -1,0 +1,35 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ruby
+
+inputs:
+- name: cookbook-develop
+- name: ci
+- name: version
+
+params:
+- CHANGELOG_GITHUB_TOKEN: {{github_token}}
+- GITHUB_TOKEN: {{github_token}}
+- GITHUB_REPO: {{github_repo}}
+
+run:
+  path: bash
+  args:
+    - -c
+    - |
+      export NEW_VERSION=$(cat ./version/number)
+      gem install github_changelog_generator
+      gem install octokit
+      cd cookbook-develop
+      touch ignore_history.md
+      github_changelog_generator -o unreleased.md --unreleased-only -b ignore_history.md
+      tail -n +5 unreleased.md | head -n -2 > unreleased.md.new
+      mv unreleased.md.new unreleased.md
+      rm ignore_history.md
+      export REPO_PATH=$(pwd)
+      cd ../
+      ruby ./ci/codokbook/scripts/release_pr.rb

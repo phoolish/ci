@@ -1,0 +1,32 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ruby
+
+inputs:
+- name: cookbook
+- name: ci
+
+params:
+  GITHUB_TOKEN: {{github_token}}
+  GITHUB_REPO: {{github_repo}}
+  UPDATE_COOKBOOKS: true
+  PRIVATE_KEY: {{github_private_key}}
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    mkdir ~/.ssh
+    echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+    chmod 700 ~/.ssh/id_rsa
+    echo "StrictHostKeyChecking no" > ~/.ssh/config
+    gem install berkshelf chef
+    cd cookbook
+    export REPO_PATH=$(pwd)
+    cd ../
+    ruby ./ci/cookbook/scripts/cookbook_dependencies_pr.rb

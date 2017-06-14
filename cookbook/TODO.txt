@@ -1,0 +1,2 @@
+* Allow for Berkshelf changes to trigger builds
+* use circle for tests

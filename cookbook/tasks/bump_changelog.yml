@@ -1,0 +1,32 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ruby
+    tag: {{ruby_version}}
+
+inputs:
+- name: cookbook
+- name: version
+
+outputs:
+- name: cookbook-changelog
+
+PARAMS:
+  CHANGELOG_GITHUB_TOKEN: {{github_token}}
+
+run:
+  path: bash
+  args:
+    - -c
+    - |
+      export NEW_VERSION=$(cat ./version/number)
+      cp -R cookbook/. cookbook-changelog
+      cd cookbook-changelog
+      gem install github_changelog_generator
+      github_changelog_generator
+      git config user.email {{git_email}}
+      git config user.name {{git_name}}
+      git add .
+      git commit -m "Update CHANGELOG for $NEW_VERSION"
