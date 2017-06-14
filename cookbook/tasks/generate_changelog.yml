@@ -27,4 +27,4 @@ run:
       rm ignore_history.md
       export REPO_PATH=$(pwd)
       cd ../
-      ruby ./ci/codokbook/scripts/release_pr.rb
+      ruby ./ci/cookbook/scripts/release_pr.rb
